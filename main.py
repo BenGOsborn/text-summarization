@@ -1,6 +1,6 @@
 from transformers import pipeline
 
-APPROX_CHUNK_SIZE = 500
+APPROX_CHUNK_SIZE = 100000000000000
 
 def load_text_from_file(file):
     out = []
@@ -34,16 +34,23 @@ def chunk_sentences(sentences):
 
     return chunks
 
+def summarize_chunks(summarizer, chunks, min_length, max_length):
+    res = summarizer(chunks, min_length=min_length, max_length=max_length, do_sample=False)
+
+    return " ".join([elem["summary_text"] for elem in res])
+
 def main():
+    summarizer = pipeline("summarization", model="t5-small")
+
     text = load_text_from_file("data/TEXT.md")
     sentences = process_text_to_sentences(text)
     chunks = chunk_sentences(sentences)
 
-    summarizer = pipeline("summarization")
+    # print(len(chunks))
 
-    res = summarizer(chunks, max_length=120, min_length=30, do_sample=False)
-
-    print(res)
+    summary = summarize_chunks(summarizer, chunks, 300, 400)
+    print(summary)
+    print(len(summary.split(" ")))
 
 if __name__ == "__main__":
     main()

@@ -40,7 +40,7 @@ def summarize_chunks(summarizer, chunks, min_length, max_length):
     return " ".join([elem["summary_text"] for elem in res])
 
 def main():
-    summarizer = pipeline("summarization", model="t5-small")
+    summarizer = pipeline("summarization")
 
     text = load_text_from_file("data/TEXT.md")
     sentences = process_text_to_sentences(text)
